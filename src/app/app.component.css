@@ -1,0 +1,69 @@
+table {
+    width: 100%;
+}
+
+.table-row {
+    width: 100%;
+}
+
+tr:hover {
+    background: whitesmoke;
+}
+
+tr.row-selected {
+    background: lightblue;
+}
+
+::ng-deep .share-tooltip{
+    background-color:black;
+    color: rgba(255,255,255, 0.9) !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.table-container {
+    height: 600px;
+    overflow: auto;
+}
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .example-full-width {
+    width: 100%;
+  }
+  
+
+  #loadingSpinner_outer{
+
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: 0.5;
+    z-index: 9999;
+    }
+    
+    #loadingSpinner {
+        position: relative;
+        top: 35%;
+        left: 50%;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: rgb(var(--color-primary));
+        animation: spin 1s ease-in-out infinite;
+        -webkit-animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { -webkit-transform: rotate(360deg); }
+      }
+      @-webkit-keyframes spin {
+        to { -webkit-transform: rotate(360deg); }
+      }

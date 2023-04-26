@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12" style="margin-top: 40px">
+      <div *ngIf="isLoading" id="loadingSpinner_outer" >
+        <div id="loadingSpinner"></div>
+      </div>
+      <mat-card>
+        <div class="card cs-card" style="border: none;">
+          <div class="card-content">
+            <div class="row" style="margin-top:20px">
+              <div class="col-md-9">
+                <span *ngFor="let node of displayPath;index as i">
+                  <button *ngIf="i > 0" disabled mat-icon-button style="font-size:18px">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                  <button *ngIf="i < displayPath.length-1" mat-button
+                    style="font-size:18px;padding:0px;text-transform:capitalize;"
+                    (click)="displayPathClicked(i)">{{node}}</button>
+                  <button *ngIf="i === displayPath.length-1" mat-button
+                    style="font-size:18px;padding:0px;text-transform:capitalize;">
+                    {{node}}
+                  </button>
+                </span>
+              </div>
+
+              <div class="col-md-3">
+                <span *ngIf="displayFileActions">
+                  <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
+                    matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="download()"  >
+                    <mat-icon>cloud_download</mat-icon>
+                  </button>
+
+                  <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="File Sharing"
+                    matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="deleteObject()" >
+                    <mat-icon >delete</mat-icon>
+                    <!-- <mat-spinner *ngIf="showShareSpinner" style="float:right;" [color]="'accent'" [diameter]="15">
+                    </mat-spinner> -->
+                  </button>
+                </span>
+              </div>
+              <div class="col-md-4" >
+                <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
+                matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="uploadInput.click()"  >
+                <mat-icon>cloud_upload</mat-icon>
+              </button>
+              <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name="" id="" (change)="onFileSelected($event)">
+              </div>
+            </div>
+            <mat-divider></mat-divider>
+            <mat-table style="display: none">
+              <mat-header-row *matHeaderRowDef="[]"></mat-header-row>
+            </mat-table>
+
+            <table class="mat-table">
+              <thead>
+                <tr class="mat-header-row table-row">
+                  <th class="mat-header-cell" style="width: 80px;"></th>
+                  <th class="mat-header-cell">Name</th>
+                  <th class="mat-header-cell" style="width: 160px;">Last modified</th>
+                  <th class="mat-header-cell" style="width: 100px;">Size</th>
+                </tr>
+              </thead>
+            </table>
+            <div class="table-container" style="width: 100%;">
+              <table class="mat-table">
+                <tbody *ngIf="!this.switchingView">
+                  <tr *ngFor="let file of displayList" (click)="fileClicked(file)" (dblclick)="fileDoubleClicked(file)"
+                    [class]="'mat-row table-row'" [class.row-selected]="file.selected">
+                    <td class="mat-cell" style="width: 80px;">
+                      <mat-icon *ngIf="file.isFolder" class="mat-icon-rtl-mirror">
+                        folder
+                      </mat-icon>
+                    </td>
+                    <td class="mat-cell">{{file.Name}}
+                    </td>
+                    <td class="mat-cell" style="width: 160px;">{{file.formattedDate}}</td>
+                    <td class="mat-cell" style="width: 100px;">{{!file.isFolder ? file.formattedSize : ''}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>
