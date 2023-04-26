@@ -1,0 +1,16 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+    <div>{{title}}</div>
+    <button type="button" mat-icon-button (click)="close('No answer')" tabindex="-1">
+        <mat-icon >close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content>
+    <p>{{body}}</p>
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="close('No')">NO</button>
+    <button mat-button color="primary" (click)="close('Yes')">YES</button>
+</mat-dialog-actions>

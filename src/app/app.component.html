@@ -1,11 +1,11 @@
-<div class="container">
+<div class="container-fluid" >
   <div class="row">
     <div class="col-md-12" style="margin-top: 40px">
       <div *ngIf="isLoading" id="loadingSpinner_outer" >
         <div id="loadingSpinner"></div>
       </div>
-      <mat-card>
-        <div class="card cs-card" style="border: none;">
+      <mat-card fxFlex={{leftSide}} style="margin-left:80px;margin-right:20px">
+        <div class="card cs-card"  style="border: none;">
           <div class="card-content">
             <div class="row" style="margin-top:20px">
               <div class="col-md-9">
@@ -22,65 +22,113 @@
                   </button>
                 </span>
               </div>
+            </div>
+            <div class="row">
+            <div class="col-md-12">
+              <div class="actions-row">
+                <div class=" py-2" >
+                  <button mat-raised-button extended color="primary" class="upload_button" style="font-size:18px" matTooltip="Upload"
+                  matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="uploadInput.click()"  >
+                  <mat-icon>cloud_upload</mat-icon>
+                  Upload
+                </button>
+                <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name="" id="" (change)="onFileSelected($event)">
+                </div>
+                <div >
+                  <span *ngIf="displayFileActions">
 
-              <div class="col-md-3">
-                <span *ngIf="displayFileActions">
-                  <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
-                    matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="download()"  >
-                    <mat-icon>cloud_download</mat-icon>
-                  </button>
-
-                  <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="File Sharing"
-                    matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="deleteObject()" >
-                    <mat-icon >delete</mat-icon>
-                    <!-- <mat-spinner *ngIf="showShareSpinner" style="float:right;" [color]="'accent'" [diameter]="15">
-                    </mat-spinner> -->
-                  </button>
-                </span>
-              </div>
-              <div class="col-md-4" >
-                <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
-                matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="uploadInput.click()"  >
-                <mat-icon>cloud_upload</mat-icon>
-              </button>
-              <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name="" id="" (change)="onFileSelected($event)">
+                    <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
+                      matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="download()"  >
+                      <mat-icon>cloud_download</mat-icon>
+                    </button>
+                      <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Share"
+                      matTooltipClass="share-tooltip" matTooltipShowDelay="1000"  >
+                      <mat-icon>share</mat-icon>
+                    </button>
+                    <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="File Sharing"
+                      matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="deleteObject()" >
+                      <mat-icon >delete</mat-icon>
+                    </button>
+                  </span>
+                </div>
               </div>
             </div>
+            </div>
+
+            
             <mat-divider></mat-divider>
-            <mat-table style="display: none">
-              <mat-header-row *matHeaderRowDef="[]"></mat-header-row>
-            </mat-table>
 
-            <table class="mat-table">
-              <thead>
-                <tr class="mat-header-row table-row">
-                  <th class="mat-header-cell" style="width: 80px;"></th>
-                  <th class="mat-header-cell">Name</th>
-                  <th class="mat-header-cell" style="width: 160px;">Last modified</th>
-                  <th class="mat-header-cell" style="width: 100px;">Size</th>
-                </tr>
-              </thead>
-            </table>
-            <div class="table-container" style="width: 100%;">
-              <table class="mat-table">
-                <tbody *ngIf="!this.switchingView">
-                  <tr *ngFor="let file of displayList" (click)="fileClicked(file)" (dblclick)="fileDoubleClicked(file)"
-                    [class]="'mat-row table-row'" [class.row-selected]="file.selected">
-                    <td class="mat-cell" style="width: 80px;">
-                      <mat-icon *ngIf="file.isFolder" class="mat-icon-rtl-mirror">
-                        folder
-                      </mat-icon>
-                    </td>
-                    <td class="mat-cell">{{file.Name}}
-                    </td>
-                    <td class="mat-cell" style="width: 160px;">{{file.formattedDate}}</td>
-                    <td class="mat-cell" style="width: 100px;">{{!file.isFolder ? file.formattedSize : ''}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+
+<div>
+  <div  class="table-container" >
+
+     <table  [dataSource]="dataSource" class="w-full " mat-table matSort>
+
+        <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+          <ng-container *ngIf="column.type === 'checkbox'" [matColumnDef]="column.property">
+            <th *matHeaderCellDef mat-header-cell>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()"
+                            color="primary">
+              </mat-checkbox>
+            </th>
+            <td *matCellDef="let row" class="w-4" mat-cell>
+              <mat-checkbox *ngIf="!row.isFolder"
+                            (change)="$event ? selection.toggle(row) : null"
+                            (click)="$event.stopPropagation()"
+                            [checked]="selection.isSelected(row)"
+                            color="primary">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+          <ng-container *ngIf="column.type === 'custom'" [matColumnDef]="column.property">
+              <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
+                  column.label }}</th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                <mat-icon *ngIf="row[column.property] == true" >folder</mat-icon>
+                <mat-icon  *ngIf="row[column.property] == false" > insert_drive_file</mat-icon>
+
+              </td>
+          </ng-container>
+      </ng-container>
+  
+      <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+          <ng-container *ngIf="column.type === 'text'" [matColumnDef]="column.property">
+              <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
+                  column.label }}</th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>{{
+                  row[column.property] }}</td>
+          </ng-container>
+      </ng-container>
+  
+      <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+          <ng-container *ngIf="column.type === 'date'" [matColumnDef]="column.property">
+              <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
+                  column.label }}</th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>{{
+                  row[column.property] |date }}</td>
+          </ng-container>
+      </ng-container>
+  
+
+  
+      <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+      <tr  (click)="!row.isFolder&&selection.select(row)" (dblclick)="fileDoubleClicked(row)" *matRowDef="let row;  columns: visibleColumns;" 
+          class="hover:bg-hover trans-ease-out cursor-pointer" mat-row></tr>
+  </table> 
+  <mat-paginator  [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage" [pageSize]="pageSize" (page)="pageChanged($event)" class="sticky left-0">
+  </mat-paginator> 
+  </div>
+
+</div>
           </div>
         </div>
+      </mat-card>
+      <mat-card fxFlex={{rightSide}} *ngIf="!leftSideFlag" >
       </mat-card>
     </div>
   </div>
