@@ -32,7 +32,7 @@
                   <mat-icon>cloud_upload</mat-icon>
                   Upload
                 </button>
-                <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name="" id="" (change)="onFileSelected($event)">
+                <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name="" id="" (change)="upload($event)">
                 </div>
                 <div >
                   <span *ngIf="displayFileActions">

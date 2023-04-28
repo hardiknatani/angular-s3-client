@@ -37,6 +37,7 @@ export class AppComponent implements OnInit,AfterViewInit {
   displayList:any = [];
   bucket:string;
   selectedFile:any;
+  selectedFiles:any;
   fileUploadControl= new FormControl();
   isLoading=false;
   leftSideFlag = true;
@@ -45,10 +46,10 @@ export class AppComponent implements OnInit,AfterViewInit {
   dataSource = new MatTableDataSource();
   tableColumns: TableColumn<any>[] = [
     { label: 'Checkbox', property: 'checkbox', type: 'checkbox', visible: true },
+    { label: 'Type', property: 'isFolder', type: 'custom', visible: true },
     { label: 'Name', property: 'Name', type: 'text', visible: true },
     { label: 'Last Modified', property: 'LastModified', type: 'date', visible: true },
     { label: 'Size', property: 'formattedSize', type: 'text', visible: true },
-    { label: 'Type', property: 'isFolder', type: 'custom', visible: true },
 
   ];  
   selection = new SelectionModel<any>(true, []);
@@ -98,13 +99,11 @@ export class AppComponent implements OnInit,AfterViewInit {
 
   ngOnInit() {
     this.isLoading=true;
-    // get files from server and initialise display to root path
+
     this.loadFiles()
     .then(() =>{
       this.isLoading=false;
-      this.setDisplay([])});
-
-
+      this.setDisplayPath([])});
   }
 
   ngAfterViewInit(){
@@ -112,8 +111,20 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.dataSource.sort = this.sort;
 
     this.selection.changed.subscribe(selected=>{
-      if(this.selection.selected.length==1){
-        this.fileClicked(this.selection.selected[0])
+      this.resetSelected()
+
+      this.selectedFiles = this.selection.selected.filter(file=>!file.isFolder)
+      if(this.selectedFiles.length>0){
+        this.displayFileActions=true;
+        if(this.leftSideFlag){
+          this.leftSide=70;
+          this.rightSide=30;
+          this.leftSideFlag=false
+        }
+      }else{
+        this.leftSide=100;
+        this.rightSide=0;
+        this.leftSideFlag=true
       }
     })
   }
@@ -130,7 +141,6 @@ export class AppComponent implements OnInit,AfterViewInit {
     return this.s3Service.getFiles()
     .then((res:any) => {
       this.fileList = res;
-      this.dataSource.data=res
       this.bucket =environment.S3authorization.bucket;
       
       this.fileList.forEach(file => {
@@ -141,12 +151,13 @@ export class AppComponent implements OnInit,AfterViewInit {
     .catch(console.log);
   }
 
-  setDisplay(path) {
+  setDisplayPath(path) {
     let newDepth = path.length;
-    console.log(this.fileList)
     this.displayList = this.fileList.filter(file => file.Path.length === newDepth && isEqual(file.Path.slice(0, newDepth), path));
     this.displayList = orderBy(this.displayList, ['isFolder', 'Name'], ['desc', 'asc']);
     this.displayPath = [this.bucket, ...path];
+    this.dataSource.data=this.displayList
+
   }
 
   resetSelected() {
@@ -154,44 +165,38 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.displayFileActions = false;
   }
 
-  fileClicked(file) {
-    if(this.leftSideFlag){
-      this.leftSide=70;
-      this.rightSide=30;
-      this.leftSideFlag=false
-    }
-
-    this.resetSelected()
-    file.selected = true;
-    if(!file.isFolder) this.displayFileActions = true;
-    this.selectedFile=file
-    this.selection.select(file)
-  }
 
   fileDoubleClicked(file) {
+    console.log(file)
     if(file.isFolder) {
       this.resetSelected();
       let path = [...file.Path, file.Name];
-      this.setDisplay(path);
+      this.setDisplayPath(path);
     }
   }
 
   displayPathClicked(index) {
     this.resetSelected();
     let path = this.displayPath.slice(1,index+1);
-    this.setDisplay(path);
+    this.setDisplayPath(path);
   }
 
   download(){
     this.s3Service.download(this.selectedFile.Key)
   }
 
-  onFileSelected($event){
-    console.log(this.displayPath)
+  upload($event){
+    let folderName = this.displayPath.filter(path=>path!=this.bucket)
+    if(folderName.length<1){
+      folderName=""
+    }else{
+      folderName=folderName.join('/')+"/";
+    }
+    console.log(folderName)
     // this.isLoading=true;
     // const file = (event.target as HTMLInputElement).files[0];
-    // console.log(file);
-    // this.s3Service.putFileObject(" ",file,file.name).then(data=>{
+    // this.s3Service.putFileObject(folderName,file,file.name)    
+    // .then(data=>{
     //   console.log(data);
     //   this.isLoading=false;
     //   this.loadFiles()
@@ -205,6 +210,10 @@ export class AppComponent implements OnInit,AfterViewInit {
 
   deleteObject(){
     this.s3Service.deleteFile(this.selectedFile.Key)
+  }
+
+  share(){
+
   }
 
 }

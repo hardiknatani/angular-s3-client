@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import * as aws from 'aws-sdk'
 import * as _ from 'lodash'
 import { Buffer } from 'buffer/';
-
 import { environment } from 'src/environments/environment';
-
+import { ListObjectsV2Request, ManagedUpload } from 'aws-sdk/clients/s3';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class S3Service {
-
-  constructor() { }
-  public getS3Bucket(): any {
+  constructor(private http:HttpClient) { }
+  public getS3Bucket(): aws.S3 {
     const bucket = new aws.S3(
       {
         accessKeyId: environment.S3authorization.accessKeyId,
@@ -62,11 +61,16 @@ export class S3Service {
     var options = {
       partSize: 10 * 1024 * 1024,
       queueSize: 1,
-      ACL: 'bucket-owner-full-control'
     };
+
+      let upload = this.getS3Bucket().upload(params, options);
+      upload.on("httpUploadProgress",(progress)=>{
+      let progressPercentage = Math.round(progress.loaded / progress.total * 100);
+      console.log(progressPercentage)
+    })
     return new Promise((resolve, reject) => {
       const that = this
-      this.getS3Bucket().upload(params, options).send(function (err, data) {
+      upload.send(function (err, data) {
         if (err) {
           reject(false);
         }
@@ -99,15 +103,30 @@ export class S3Service {
 
     let s3 = this.getS3Bucket()      
 
-        async function getAllObjects() {
-          var params = {
-              Bucket: environment.S3authorization.bucket
-          }
-          return s3.listObjectsV2(params).promise();
+      let that = this;
+      async function getAllObjects() {
+        let objects = [];
+      
+        let params:any = {
+          Bucket: environment.S3authorization.bucket,
+        };
+      
+        while (true) {
+          const response = await s3.listObjectsV2(params).promise();
+        //   allKeys = allKeys.concat(response.Contents.map(obj => obj.Key));
+        response.Contents.forEach(c=>objects.push(c));
+          if (!response.IsTruncated) {
+            break;
+          }  
+          params.ContinuationToken = response.NextContinuationToken;
+        }
+      
+        return objects;
+    
       }
 
       function processNode(object) {
-        let isFolder = _.endsWith(object.Key, '/');
+        let isFolder = _.endsWith(object.Key, '/') || object.Size==0;
         let name = getNameFromKey(object.Key);
         let path = getPathFromKey(object.Key);
 
@@ -142,14 +161,18 @@ export class S3Service {
 
           return getAllObjects()
           .then(res => {
-              let objects = res.Contents;
-              let result = [];
-              for(let object of objects) {
-                  let node = processNode(object);
-                  result.push(node);
-              }
-              return result;
+            let objects = res;
+            let result = [];
+            for(let object of objects) {
+                let node = processNode(object);
+                result.push(node);
+            }
+            return result;
           })
   }
+
+
+  
+  // Usage example
 
 }
