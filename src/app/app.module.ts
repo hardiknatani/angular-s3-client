@@ -9,10 +9,12 @@ import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { S3Service } from './s3.service';
+import { DeleteDialogComponentComponent } from 'src/delete-dialogs-component/delete-dialog-component.component';
+import { ShareModalComponent } from './share-modal/share-modal.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,DeleteDialogComponentComponent, ShareModalComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +24,7 @@ import { S3Service } from './s3.service';
     ReactiveFormsModule,
     FormsModule,
     FlexModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   providers: [S3Service],
   bootstrap: [AppComponent]

@@ -3,7 +3,7 @@ import * as aws from 'aws-sdk'
 import * as _ from 'lodash'
 import { Buffer } from 'buffer/';
 import { environment } from 'src/environments/environment';
-import { ListObjectsV2Request, ManagedUpload } from 'aws-sdk/clients/s3';
+import { DeleteObjectsRequest, ListObjectsV2Request, ManagedUpload, PresignedPost } from 'aws-sdk/clients/s3';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -21,13 +21,19 @@ export class S3Service {
     );
     return bucket;
   }
-  deleteFile(filepath) {
-    const params = {
+  deleteFiles(files:any[]) {
+    const params:DeleteObjectsRequest = {
       Bucket: environment.S3authorization.bucket,
-      Key: filepath
+      Delete:{
+        Objects: files.map(file=>{
+          return {
+            Key:file.Key
+          }
+        })
+      }
     };
     return new Promise((resolve, reject) => {
-      this.getS3Bucket().deleteObject(params, function (err, data) {
+      this.getS3Bucket().deleteObjects(params, function (err, data) {
         if (err) {
           reject(false);
         }
@@ -37,21 +43,21 @@ export class S3Service {
     });
   }
 
-  getFileObject(filepath) {
-    const params = {
-      Bucket: environment.S3authorization.bucket,
-      Key: filepath
-    };
-    return new Promise((resolve, reject) => {
-      this.getS3Bucket().getObject(params, function (err, data) {
-        if (err) {
-          reject(false);
-        }
-        resolve(data);
+  // getFileObject(filepath) {
+  //   const params = {
+  //     Bucket: environment.S3authorization.bucket,
+  //     Key: filepath
+  //   };
+  //   return new Promise((resolve, reject) => {
+  //     this.getS3Bucket().getObject(params, function (err, data) {
+  //       if (err) {
+  //         reject(false);
+  //       }
+  //       resolve(data);
 
-      });
-    });
-  }
+  //     })
+  //   });
+  // }
   putFileObject(folder, file,fileName) {
     const params = {
       Bucket: environment.S3authorization.bucket,
@@ -79,24 +85,34 @@ export class S3Service {
     });
   }
 
-  download(filePath) {
-    const params = {
-      Bucket: environment.S3authorization.bucket,
-      Key: filePath,
-      Expires: 60 * 5,
-      ResponseContentDisposition: "attachment"
-    };
-    var url = this.getS3Bucket().getSignedUrl('getObject', params);
-    window.open(url, "_blank");
+  download(fileList) {
+
+     let urls =  fileList.map(file=>{
+        const params = {
+          Bucket: environment.S3authorization.bucket,
+          Key: file.Key,
+          Expires: 60 * 5,
+          ResponseContentDisposition: "attachment"
+        };
+        return this.getS3Bucket().getSignedUrl('getObject', params);
+      })
+
+      urls.forEach(url=>{
+        window.open(url, "_blank");
+      }
+        )
+
   }
 
 
   async getSingleImageUrl(key) {
     const params = {
       Bucket: environment.S3authorization.bucket,
-      Key: key
+      Key: key,
+      Expires: 60 * 5,
+      ResponseContentDisposition: "attachment"
     };
-    return await this.getS3Bucket().getSignedUrl('getObject', params);
+    return await this.getS3Bucket().getSignedUrl('getObject', params)
   }
 
   getFiles(){
@@ -113,7 +129,6 @@ export class S3Service {
       
         while (true) {
           const response = await s3.listObjectsV2(params).promise();
-        //   allKeys = allKeys.concat(response.Contents.map(obj => obj.Key));
         response.Contents.forEach(c=>objects.push(c));
           if (!response.IsTruncated) {
             break;

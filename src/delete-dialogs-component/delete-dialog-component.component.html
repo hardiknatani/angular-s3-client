@@ -1,16 +1,30 @@
-<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
-    <div>{{title}}</div>
-    <button type="button" mat-icon-button (click)="close('No answer')" tabindex="-1">
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between baseline">
+    <!-- <div>{{title}}</div> -->
+<div>
+    <h2 *ngIf="fileList.length>1" >Are you sure you want to delete the files below?</h2>
+    <h2 *ngIf="fileList.length==1" >Are you sure you want to delete this file?</h2>
+
+</div>
+    <button type="button" mat-icon-button (click)="close(false)" tabindex="-1">
         <mat-icon >close</mat-icon>
     </button>
 </div>
-
+<hr class=".mt-n2" >
 <mat-dialog-content>
-    <p>{{body}}</p>
+    <mat-list>
+        <ul>
+        <li *ngFor="let file of fileList">
+            <mat-list-item  > 
+                <span matListItemTitle>{{file.Name}}</span>
+            </mat-list-item>
+        </li>
+        </ul>
+    </mat-list>
+
 </mat-dialog-content>
 
 
 <mat-dialog-actions align="end">
-    <button mat-button (click)="close('No')">NO</button>
-    <button mat-button color="primary" (click)="close('Yes')">YES</button>
+    <button mat-button (click)="close(false)">NO</button>
+    <button mat-button color="warn" (click)="close(true)">YES</button>
 </mat-dialog-actions>

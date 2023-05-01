@@ -9,7 +9,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {DeleteDialogComponentComponent} from '../delete-dialogs-component/delete-dialog-component.component'
+import { ShareModalComponent } from './share-modal/share-modal.component';
 export interface TableColumn<T> {
   label: string;
   property: keyof T | string;
@@ -95,7 +97,8 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.pageSize = e.pageSize;
     this.currentPage = e.pageIndex;
 }
-  constructor( private s3Service: S3Service) {}
+  constructor( private s3Service: S3Service,     private dialog: MatDialog,
+    ) {}
 
   ngOnInit() {
     this.isLoading=true;
@@ -182,7 +185,7 @@ export class AppComponent implements OnInit,AfterViewInit {
   }
 
   download(){
-    this.s3Service.download(this.selectedFile.Key)
+    this.s3Service.download(this.selectedFiles)
   }
 
   upload($event){
@@ -209,10 +212,40 @@ export class AppComponent implements OnInit,AfterViewInit {
   }
 
   deleteObject(){
-    this.s3Service.deleteFile(this.selectedFile.Key)
+    this.dialog.open(DeleteDialogComponentComponent,{
+      // fileList:this.selectedFiles
+      data:{
+        fileList:this.selectedFiles
+      }
+    }).afterClosed().subscribe(confirmed=>{
+      if(confirmed){
+        this.s3Service.deleteFiles(this.selectedFiles)
+      }
+    })
+    
   }
 
-  share(){
+  async share() {
+    this.isLoading = true;
+    let urlList = []
+    Promise.all(this.selectedFiles.map(async (file) => {
+      await this.s3Service.getSingleImageUrl(file.Key).then(url => {
+        urlList.push({ name: file.Name, url });
+      })
+    })).then(() => {
+      this.isLoading = false;
+      this.dialog.open(ShareModalComponent, {
+        data: {
+          fileList: urlList
+        },
+        autoFocus:false,
+        // maxHeight:'50vh',
+        // minHeight:'25vh',
+        // height:'50vh'
+      });
+
+    })
+
 
   }
 

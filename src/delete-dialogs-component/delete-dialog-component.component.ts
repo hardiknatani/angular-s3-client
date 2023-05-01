@@ -9,16 +9,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class DeleteDialogComponentComponent implements OnInit {
   title = "";
   body = "";
-  constructor(@Inject(MAT_DIALOG_DATA) public defaults: any,
+  fileList:any
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {fileList:[]},
     private dialogRef: MatDialogRef<DeleteDialogComponentComponent>,
-    private cd: ChangeDetectorRef) { }
+    private cd: ChangeDetectorRef) {
+this.fileList=data.fileList
+     }
 
   ngOnInit(): void {
-    this.title = this.defaults.title;
-    this.body = this.defaults.body;
+
   }
-  close(answer: string) {
-    this.dialogRef.close(answer);
+  close(confirrmed: boolean) {
+    this.dialogRef.close(confirrmed);
   }
 
 }
