@@ -12,6 +12,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {DeleteDialogComponentComponent} from '../delete-dialogs-component/delete-dialog-component.component'
 import { ShareModalComponent } from './share-modal/share-modal.component';
+import { Observable } from 'rxjs';
+import { filter, finalize,startWith,map } from 'rxjs/operators';
 export interface TableColumn<T> {
   label: string;
   property: keyof T | string;
@@ -38,7 +40,6 @@ export class AppComponent implements OnInit,AfterViewInit {
   fileList:any = [];
   displayList:any = [];
   bucket:string;
-  selectedFile:any;
   selectedFiles:any;
   fileUploadControl= new FormControl();
   isLoading=false;
@@ -56,6 +57,7 @@ export class AppComponent implements OnInit,AfterViewInit {
   ];  
   selection = new SelectionModel<any>(true, []);
   searchCtrl = new FormControl();
+  filteredFiles: Observable<string[]>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   pageSizeOptions: number[] = [5, 10, 20, 50];
@@ -70,8 +72,6 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.isAllSelected() ?
       this.selection.clear() :
       this.dataSource.data.forEach((row:any) => !row.isFolder && this.selection.select(row));
-
-      console.log(this.selection.selected)
   } 
 
   isAllSelected() {
@@ -129,7 +129,12 @@ export class AppComponent implements OnInit,AfterViewInit {
         this.rightSide=0;
         this.leftSideFlag=true
       }
-    })
+    });
+
+    this.filteredFiles = this.searchCtrl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
   }
 
   loadFiles() {
@@ -144,6 +149,7 @@ export class AppComponent implements OnInit,AfterViewInit {
     return this.s3Service.getFiles()
     .then((res:any) => {
       this.fileList = res;
+      console.log(this.fileList)
       this.bucket =environment.S3authorization.bucket;
       
       this.fileList.forEach(file => {
@@ -156,9 +162,13 @@ export class AppComponent implements OnInit,AfterViewInit {
 
   setDisplayPath(path) {
     let newDepth = path.length;
+    this.fileList.forEach(file=>{
+      
+      console.log( file.Path.length === newDepth); console.log (isEqual(file.Path.slice(0, newDepth), path))})
     this.displayList = this.fileList.filter(file => file.Path.length === newDepth && isEqual(file.Path.slice(0, newDepth), path));
     this.displayList = orderBy(this.displayList, ['isFolder', 'Name'], ['desc', 'asc']);
     this.displayPath = [this.bucket, ...path];
+    console.log(this.displayList)
     this.dataSource.data=this.displayList
 
   }
@@ -246,6 +256,19 @@ export class AppComponent implements OnInit,AfterViewInit {
     })
   }
 
+  closeDetailsSidebar(){
+    this.leftSideFlag=!this.leftSideFlag
+    this.leftSide=100
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = this._normalizeValue(value);
+    return this.fileList.filter(file => this._normalizeValue(file.Name).includes(filterValue));
+  }
+
+  private _normalizeValue(value: string): string {
+    return value.toLowerCase().replace(/\s/g, '');
+  }
 
 
 }
