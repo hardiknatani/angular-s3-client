@@ -149,7 +149,7 @@ export class AppComponent implements OnInit,AfterViewInit {
       this.fileList.forEach(file => {
         if(!file.isFolder) file.formattedSize = fileSizeFormatter(file.Size);
         file.formattedDate = moment(file.LastModified).format('YYYY-MM-DD HH:mm');
-      })
+        }) 
     })
     .catch(console.log);
   }
@@ -243,10 +243,9 @@ export class AppComponent implements OnInit,AfterViewInit {
         // minHeight:'25vh',
         // height:'50vh'
       });
-
     })
-
-
   }
+
+
 
 }

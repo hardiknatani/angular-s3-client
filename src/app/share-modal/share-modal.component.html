@@ -23,7 +23,7 @@
             <div fxFlex="60" >
                 <mat-form-field class="w-100 "  disabled>
                     <input disabled matInput  value={{file.url}}>
-                    <button class="ml-3" mat-flat-button matSuffix color="primary">
+                    <button class="ml-3" mat-flat-button matSuffix color="primary" (click)="copy(file)" >
                         <mat-icon>content_copy</mat-icon>
                     </button>
                   </mat-form-field>
@@ -38,7 +38,7 @@
 
 <hr>
     <div  class="mt-3" fxLayout="row" fxLayoutAlign="space-between baseline" >
-        <button class="w-4" mat-raised-button color="primary" (click)="close()">Copy all
+        <button class="w-4" mat-raised-button color="primary" (click)="copy(urlList)">Copy all
     <mat-icon> link </mat-icon>
         </button>
         <button mat-raised-button color="primary" (click)="close()">Done</button>

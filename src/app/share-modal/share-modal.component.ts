@@ -20,4 +20,16 @@ urlList:any[]=[];
     this.dialogRef.close()
   }
 
+  copy(files:any){
+    console.log(files)
+    if (files.constructor===Array){
+      // console.log(files.toString())
+      files.map(file=>JSON.stringify(file)).toString()
+      console.log(files)
+      navigator.clipboard.writeText(  files.map(file=>JSON.stringify(file)).toString()).then(()=>alert('content copied')).catch(()=>alert("Error"))
+    }else{
+      navigator.clipboard.writeText(files.url).then(()=>alert('content copied')).catch(()=>alert("Error"))
+    }
+  }
+
 }
