@@ -170,38 +170,39 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-    <div class="p-3" *ngIf="selectedFiles.length==1">
+    <div class="p-3 d-flex flex-column details-tab" *ngIf="selectedFiles.length==1">
       <div>
         <h2>File details</h2>
       </div>
-      <div>
-        <h4>
+      <div class="" >
+        <h4 >
           File Type
         </h4>
-        <p></p>
+        <p>
+          {{selectedFiles[0].Name.split('.')[selectedFiles[0].Name.split('.').length-1]}}      
+        </p>      
       </div>
 
       <div>
         <h4>
           Size
         </h4>
-        <p></p>
+        <p>{{selectedFiles[0].formattedSize}}</p>
       </div>
 
       <div>
         <h4>
           Location
         </h4>
-        <p></p>
+        <p>{{selectedFiles[0].Path}}</p>
       </div>
     
       <div>
         <h4>
           Last Modified
         </h4>
-        <p></p>
+        <p>{{selectedFiles[0].LastModified}}</p>
       </div>
-    
     </div>
   </mat-card>
 </div>

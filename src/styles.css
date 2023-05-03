@@ -3,6 +3,10 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: rgb(238,238,238);}
 
+*{
+    margin: 0;
+    padding: 0;
+}
 button:focus, button:active:focus, button.active:focus {
     outline: none !important;
     outline-style: none !important;

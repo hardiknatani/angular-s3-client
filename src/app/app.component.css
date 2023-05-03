@@ -74,3 +74,11 @@ tr.row-selected {
       @-webkit-keyframes spin {
         to { -webkit-transform: rotate(360deg); }
       }
+
+  .details-tab div{
+margin-bottom: 2.5vh;
+  }
+
+  .details-tab h4,p{
+    margin-bottom: 0;
+      }
