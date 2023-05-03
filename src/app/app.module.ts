@@ -11,10 +11,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { S3Service } from './s3.service';
 import { DeleteDialogComponentComponent } from 'src/delete-dialogs-component/delete-dialog-component.component';
 import { ShareModalComponent } from './share-modal/share-modal.component';
+import { LoginModalComponent } from './login-modal/login-modal.component';
 
 @NgModule({
   declarations: [
-    AppComponent,DeleteDialogComponentComponent, ShareModalComponent
+    AppComponent,DeleteDialogComponentComponent, ShareModalComponent, LoginModalComponent
   ],
   imports: [
     BrowserModule,

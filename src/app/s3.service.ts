@@ -10,20 +10,31 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class S3Service {
+  bucketName;
+  accessKeyId;
+  secretAccessKey;
+  region;
+
+  // bucketName =environment.S3authorization.bucket ;
+  // accessKeyId =environment.S3authorization.accessKeyId ;
+  // secretAccessKey = environment.S3authorization.secretAccessKey ;
+  // region =environment.S3authorization.region ;
+
   constructor(private http:HttpClient) { }
   public getS3Bucket(): aws.S3 {
     const bucket = new aws.S3(
       {
-        accessKeyId: environment.S3authorization.accessKeyId,
-        secretAccessKey: environment.S3authorization.secretAccessKey,
-        region: environment.S3authorization.region
+        
+        accessKeyId: this.accessKeyId,
+        secretAccessKey: this.secretAccessKey,
+        region: this.region
       }
     );
     return bucket;
   }
   deleteFiles(files:any[]) {
     const params:DeleteObjectsRequest = {
-      Bucket: environment.S3authorization.bucket,
+      Bucket: this.bucketName,
       Delete:{
         Objects: files.map(file=>{
           return {
@@ -45,7 +56,7 @@ export class S3Service {
 
   // getFileObject(filepath) {
   //   const params = {
-  //     Bucket: environment.S3authorization.bucket,
+  //     Bucket: this.bucketName,
   //     Key: filepath
   //   };
   //   return new Promise((resolve, reject) => {
@@ -60,7 +71,7 @@ export class S3Service {
   // }
   putFileObject(folder, file,fileName) {
     const params = {
-      Bucket: environment.S3authorization.bucket,
+      Bucket: this.bucketName,
       Key: folder + fileName,
       Body: file
     };
@@ -89,7 +100,7 @@ export class S3Service {
 
      let urls =  fileList.map(file=>{
         const params = {
-          Bucket: environment.S3authorization.bucket,
+          Bucket: this.bucketName,
           Key: file.Key,
           Expires: 60 * 5,
           ResponseContentDisposition: "attachment"
@@ -107,7 +118,7 @@ export class S3Service {
 
   async getSingleImageUrl(key) {
     const params = {
-      Bucket: environment.S3authorization.bucket,
+      Bucket: this.bucketName,
       Key: key,
       Expires: 60 * 5,
       ResponseContentDisposition: "attachment"
@@ -124,7 +135,7 @@ export class S3Service {
         let objects = [];
       
         let params:any = {
-          Bucket: environment.S3authorization.bucket,
+          Bucket: that.bucketName,
         };
       
         while (true) {
@@ -171,7 +182,7 @@ export class S3Service {
       }
 
           var params = {
-            Bucket: environment.S3authorization.bucket
+            Bucket: this.bucketName
         }; 
 
           return getAllObjects()
@@ -184,6 +195,24 @@ export class S3Service {
             }
             return result;
           })
+  }
+
+  validateBucket(){
+
+    const params = {
+      Bucket: this.bucketName,
+    };
+
+    let check = this.getS3Bucket().headBucket(params)
+    return new Promise((resolve, reject) => {
+      const that = this
+      check.send(function (err, data) {
+        if (err) {
+          reject(err);
+        }
+        resolve(data);
+      });
+    });
   }
 
 

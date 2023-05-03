@@ -14,6 +14,7 @@ import {DeleteDialogComponentComponent} from '../delete-dialogs-component/delete
 import { ShareModalComponent } from './share-modal/share-modal.component';
 import { Observable } from 'rxjs';
 import { filter, finalize,startWith,map } from 'rxjs/operators';
+import { LoginModalComponent } from './login-modal/login-modal.component';
 export interface TableColumn<T> {
   label: string;
   property: keyof T | string;
@@ -101,12 +102,23 @@ export class AppComponent implements OnInit,AfterViewInit {
     ) {}
 
   ngOnInit() {
-    this.isLoading=true;
+    // this.isLoading=true;
+    if(!this.s3Service.secretAccessKey || !this.s3Service.accessKeyId || ! this.s3Service.region || !this.s3Service.bucketName ){
+      this.dialog.open(LoginModalComponent,{
+        disableClose:true
+      }).afterClosed().subscribe(()=>{
+        this.isLoading=true;
+        this.ngOnInit()
+      })
+    }
+    else{
 
     this.loadFiles()
     .then(() =>{
       this.isLoading=false;
       this.setDisplayPath([])});
+    
+    }
   }
 
   ngAfterViewInit(){
@@ -149,7 +161,6 @@ export class AppComponent implements OnInit,AfterViewInit {
     return this.s3Service.getFiles()
     .then((res:any) => {
       this.fileList = res;
-      console.log(this.fileList)
       this.bucket =environment.S3authorization.bucket;
       
       this.fileList.forEach(file => {
@@ -162,13 +173,10 @@ export class AppComponent implements OnInit,AfterViewInit {
 
   setDisplayPath(path) {
     let newDepth = path.length;
-    this.fileList.forEach(file=>{
-      
-      console.log( file.Path.length === newDepth); console.log (isEqual(file.Path.slice(0, newDepth), path))})
+
     this.displayList = this.fileList.filter(file => file.Path.length === newDepth && isEqual(file.Path.slice(0, newDepth), path));
     this.displayList = orderBy(this.displayList, ['isFolder', 'Name'], ['desc', 'asc']);
     this.displayPath = [this.bucket, ...path];
-    console.log(this.displayList)
     this.dataSource.data=this.displayList
 
   }
@@ -180,7 +188,6 @@ export class AppComponent implements OnInit,AfterViewInit {
 
 
   fileDoubleClicked(file) {
-    console.log(file)
     if(file.isFolder) {
       this.resetSelected();
       let path = [...file.Path, file.Name];
@@ -205,7 +212,6 @@ export class AppComponent implements OnInit,AfterViewInit {
     }else{
       folderName=folderName.join('/')+"/";
     }
-    console.log(folderName)
     // this.isLoading=true;
     // const file = (event.target as HTMLInputElement).files[0];
     // this.s3Service.putFileObject(folderName,file,file.name)    

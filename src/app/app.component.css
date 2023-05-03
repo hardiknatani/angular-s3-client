@@ -1,3 +1,11 @@
+.search-bar{
+  border-radius: 25px;
+}
+
+mat-card{
+  border-radius: 25px;
+}
+
 .actions-row{
   width: 100%;
 display: flex;
@@ -81,4 +89,8 @@ margin-bottom: 2.5vh;
 
   .details-tab h4,p{
     margin-bottom: 0;
+      }
+
+      .head{
+        border-radius: 25px 25px 0 0;
       }

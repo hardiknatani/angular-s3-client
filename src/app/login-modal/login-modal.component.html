@@ -1,0 +1,67 @@
+<div mat-dialog-title class=" d-flex flex-row justify-content-between align-items-center">
+    <div>
+        Login to your AWS account using IAM keys
+    </div>
+    <mat-icon class="ml-5">account_circle</mat-icon>
+</div>
+<hr class=".mt-n2">
+<mat-dialog-content>
+    <div class="list__main">
+        <div>
+            <div>
+                <form [formGroup]="form">
+                    <div class="w-100">
+                        <div>
+                            <div fxLayoutAlign="space-between center">
+                                <div fxFlex="30">
+                                    <h3 class="list-item__name">Bucket Name</h3>
+                                </div>
+                                <div fxFlex="60">
+                                    <mat-form-field class="w-100">
+                                        <input formControlName="bucketName" required matInput>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div fxLayoutAlign="space-between center">
+                                <div fxFlex="30">
+                                    <h3 class="list-item__name">Access Key ID</h3>
+                                </div>
+                                <div fxFlex="60">
+                                    <mat-form-field class="w-100">
+                                        <input formControlName="accessKeyId" required matInput>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div fxLayoutAlign="space-between center">
+                                <div fxFlex="30">
+                                    <h3 class="list-item__name">Secret Access Key</h3>
+                                </div>
+                                <div fxFlex="60">
+                                    <mat-form-field class="w-100">
+                                        <input formControlName="secretAccessKey" required matInput>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div fxLayoutAlign="space-between center">
+                                <div fxFlex="30">
+                                    <h3 class="list-item__name">Region</h3>
+                                </div>
+                                <div fxFlex="60">
+                                    <mat-form-field class="w-100">
+                                        <input formControlName="region" required matInput>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<hr>
+<div class="mt-3" fxLayout="row" fxLayoutAlign="end baseline">
+
+    <button class="w-100" mat-raised-button color="primary" [disabled]="!form.valid" (click)="login()">Login</button>
+</div>

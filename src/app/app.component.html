@@ -5,7 +5,7 @@
         <div id="loadingSpinner"></div>
       </div>
 <div class="my-2" style="margin-left:80px;width:60%">
-  <div class="bg-white border-primary rounded px-4" fxFlex="auto" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
+  <div class="bg-white border-primary px-4 search-bar" fxFlex="auto" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
     fxLayoutAlign="start center">
     <mat-icon> search</mat-icon>
     <input [formControl]="searchCtrl" [matAutocomplete]="auto" class="px-4 py-3 border-0 outline-none w-100 bg-transparent" style="outline:none" placeholder="Search..." type="search">
@@ -142,7 +142,7 @@
     </div>
   </mat-card>
   <mat-card class="p-0" fxFlex={{rightSide}} *ngIf="!leftSideFlag" >
-    <div class="bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
+    <div class="head bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
       *ngIf="selectedFiles.length==1">
       <div class="d-flex flex-row align-items-center  ">
         <button mat-icon-button>
@@ -156,7 +156,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-    <div class="bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
+    <div class="head bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
     *ngIf="selectedFiles.length>1">
     <div class="d-flex flex-row align-items-center">
       <button mat-icon-button>
