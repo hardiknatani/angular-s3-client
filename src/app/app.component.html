@@ -7,13 +7,18 @@
 <div class="my-2" style="margin-left:80px;width:60%">
   <div class="bg-white border-primary px-4 search-bar" fxFlex="auto" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
     fxLayoutAlign="start center">
-    <mat-icon> search</mat-icon>
-    <input [formControl]="searchCtrl" [matAutocomplete]="auto" class="px-4 py-3 border-0 outline-none w-100 bg-transparent" style="outline:none" placeholder="Search..." type="search">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let file of filteredFiles | async" [value]="file.Name">
-        {{file.Name}}
-      </mat-option>
-    </mat-autocomplete>
+<mat-form-field>
+  <mat-icon> search</mat-icon>
+  <input matInput  [formControl]="searchCtrl" [matAutocomplete]="auto"   type="search">
+  <mat-autocomplete (optionSelected)="onSearchEnter($event)" #auto="matAutocomplete" [displayWith]="displayFn">
+    <mat-option *ngFor="let file of filteredFiles | async" [value]="file">
+      {{file.Name}}
+    </mat-option>
+  </mat-autocomplete>
+  <button  matSuffix mat-icon-button aria-label="Clear" >
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
   </div>
 </div>
 <div>

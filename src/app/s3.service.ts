@@ -10,15 +10,43 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class S3Service {
-  bucketName;
-  accessKeyId;
-  secretAccessKey;
-  region;
+  // bucketName;
+  // accessKeyId;
+  // secretAccessKey;
+  // region;
 
-  // bucketName =environment.S3authorization.bucket ;
-  // accessKeyId =environment.S3authorization.accessKeyId ;
-  // secretAccessKey = environment.S3authorization.secretAccessKey ;
-  // region =environment.S3authorization.region ;
+  bucketName =environment.S3authorization.bucket ;
+  accessKeyId =environment.S3authorization.accessKeyId ;
+  secretAccessKey = environment.S3authorization.secretAccessKey ;
+  region =environment.S3authorization.region ;
+
+//   getAllBuckets() {
+//     const allBuckets = new aws.S3(
+//       {
+//         accessKeyId: this.accessKeyId,
+//         secretAccessKey: this.secretAccessKey,
+//         region: this.region
+//       }).listBuckets();
+
+//     return new Promise((resolve, reject) => {
+//       allBuckets.send((err, data) => {
+//         if (err) {
+//           console.log(err);
+//           reject(err)
+//         } else {
+//           console.log(data);
+//           resolve(data);
+//         }
+//       })
+//     })
+//   }
+
+// validateCredentials(){
+//  let identity =new  aws.STS({
+//  }).getAccessKeyInfo({
+//   AccessKeyId:this.accessKeyId,
+//  })
+// }
 
   constructor(private http:HttpClient) { }
   public getS3Bucket(): aws.S3 {

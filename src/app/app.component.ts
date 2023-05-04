@@ -57,7 +57,7 @@ export class AppComponent implements OnInit,AfterViewInit {
 
   ];  
   selection = new SelectionModel<any>(true, []);
-  searchCtrl = new FormControl();
+  searchCtrl = new FormControl(null);
   filteredFiles: Observable<string[]>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -112,13 +112,18 @@ export class AppComponent implements OnInit,AfterViewInit {
       })
     }
     else{
-
     this.loadFiles()
     .then(() =>{
       this.isLoading=false;
       this.setDisplayPath([])});
-    
     }
+
+    this.filteredFiles = this.searchCtrl.valueChanges.pipe(
+      startWith(''),
+      map(value => {
+        const name = typeof value === 'string' ? value : value?.Name;
+        return name ? this._filter(name as string) : this.fileList.slice();
+      }),    );
   }
 
   ngAfterViewInit(){
@@ -143,10 +148,12 @@ export class AppComponent implements OnInit,AfterViewInit {
       }
     });
 
-    this.filteredFiles = this.searchCtrl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
+
+  }
+
+  onSearchEnter(e){
+    console.log(this.searchCtrl.value)
+
   }
 
   loadFiles() {
@@ -255,9 +262,7 @@ export class AppComponent implements OnInit,AfterViewInit {
           fileList: urlList
         },
         autoFocus:false,
-        // maxHeight:'50vh',
-        // minHeight:'25vh',
-        // height:'50vh'
+
       });
     })
   }
@@ -267,14 +272,15 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.leftSide=100
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = this._normalizeValue(value);
-    return this.fileList.filter(file => this._normalizeValue(file.Name).includes(filterValue));
+
+  private _filter(fileName: string): any[] {
+    const filterValue = fileName.toLowerCase();
+
+    return this.fileList.filter(file => file.Name.toLowerCase().includes(filterValue));
   }
 
-  private _normalizeValue(value: string): string {
-    return value.toLowerCase().replace(/\s/g, '');
+  displayFn(file: any): string {
+    return file && file.Name ? file.Name : '';
   }
-
 
 }
