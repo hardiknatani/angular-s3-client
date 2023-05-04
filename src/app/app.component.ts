@@ -15,6 +15,10 @@ import { ShareModalComponent } from './share-modal/share-modal.component';
 import { Observable } from 'rxjs';
 import { filter, finalize,startWith,map } from 'rxjs/operators';
 import { LoginModalComponent } from './login-modal/login-modal.component';
+import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import { UploadBarComponent } from './upload-bar/upload-bar.component';
+import { Key } from 'protractor';
+
 export interface TableColumn<T> {
   label: string;
   property: keyof T | string;
@@ -98,7 +102,10 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.pageSize = e.pageSize;
     this.currentPage = e.pageIndex;
 }
-  constructor( private s3Service: S3Service,     private dialog: MatDialog,
+  constructor(
+     private s3Service: S3Service,
+     private dialog: MatDialog,
+     private _bottomSheet: MatBottomSheet
     ) {}
 
   ngOnInit() {
@@ -151,7 +158,7 @@ export class AppComponent implements OnInit,AfterViewInit {
 
   }
 
-  onSearchEnter(e){
+  onSearchEnter(){
     console.log(this.searchCtrl.value)
 
   }
@@ -212,7 +219,7 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.s3Service.download(this.selectedFiles)
   }
 
-  upload($event){
+  upload(e){
     let folderName = this.displayPath.filter(path=>path!=this.bucket)
     if(folderName.length<1){
       folderName=""
@@ -220,18 +227,21 @@ export class AppComponent implements OnInit,AfterViewInit {
       folderName=folderName.join('/')+"/";
     }
     // this.isLoading=true;
-    // const file = (event.target as HTMLInputElement).files[0];
-    // this.s3Service.putFileObject(folderName,file,file.name)    
-    // .then(data=>{
-    //   console.log(data);
-    //   this.isLoading=false;
-    //   this.loadFiles()
-    // }).catch((err)=>{
-    //   console.log(err)
-    //   this.isLoading=false;
-    // }).finally(()=>{
-    //   this.isLoading=false;
-    // })
+    const file = (e.target as HTMLInputElement).files[0];
+    this.s3Service.putFileObject(folderName,file,file.name)    
+    .then(data=>{
+
+      console.log(data);
+      // this.isLoading=false;
+      this.loadFiles()
+    }).catch((err)=>{
+      console.log(err)
+      this.isLoading=false;
+    }).finally(()=>{
+      this.isLoading=false;
+    })
+
+
   }
 
   deleteObject(){
