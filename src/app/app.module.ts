@@ -12,10 +12,11 @@ import { S3Service } from './s3.service';
 import { DeleteDialogComponentComponent } from 'src/delete-dialogs-component/delete-dialog-component.component';
 import { ShareModalComponent } from './share-modal/share-modal.component';
 import { LoginModalComponent } from './login-modal/login-modal.component';
+import { UploadBarComponent } from './upload-bar/upload-bar.component';
 
 @NgModule({
   declarations: [
-    AppComponent,DeleteDialogComponentComponent, ShareModalComponent, LoginModalComponent
+    AppComponent,DeleteDialogComponentComponent, ShareModalComponent, LoginModalComponent, UploadBarComponent
   ],
   imports: [
     BrowserModule,

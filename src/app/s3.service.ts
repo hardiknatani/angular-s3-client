@@ -5,6 +5,8 @@ import { Buffer } from 'buffer/';
 import { environment } from 'src/environments/environment';
 import { DeleteObjectsRequest, ListObjectsV2Request, ManagedUpload, PresignedPost } from 'aws-sdk/clients/s3';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { UploadBarComponent } from './upload-bar/upload-bar.component';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +50,7 @@ export class S3Service {
 //  })
 // }
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private _bottomSheet:MatBottomSheet) { }
   public getS3Bucket(): aws.S3 {
     const bucket = new aws.S3(
       {
@@ -98,11 +100,23 @@ export class S3Service {
   //   });
   // }
   putFileObject(folder, file,fileName) {
+    this._bottomSheet.open(UploadBarComponent,{
+      data:{
+      name:fileName
+      },
+      disableClose:true,
+      panelClass:"upload-bar-bottom-sheet",
+      hasBackdrop: false,
+      closeOnNavigation: true,
+      });
+
+
     const params = {
       Bucket: this.bucketName,
       Key: folder + fileName,
       Body: file
     };
+
     var options = {
       partSize: 10 * 1024 * 1024,
       queueSize: 1,
@@ -112,6 +126,8 @@ export class S3Service {
       upload.on("httpUploadProgress",(progress)=>{
       let progressPercentage = Math.round(progress.loaded / progress.total * 100);
       console.log(progressPercentage)
+        //create progress listener subscriber
+
     })
     return new Promise((resolve, reject) => {
       const that = this

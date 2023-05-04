@@ -11,3 +11,20 @@ button:focus, button:active:focus, button.active:focus {
     outline: none !important;
     outline-style: none !important;
 }
+
+mat-bottom-sheet-container{
+    padding: 0 !important;
+    position: absolute !important;
+    right: 15px !important;
+    bottom: 0 !important;
+    width: 28vw !important;
+    min-width: unset !important;
+    border-radius: 25px 25px 0 0 !important;
+  }
+  
+   /* .bottom-sheet{
+    padding-top: 0;
+    width: 100vw;
+    height: 35vh;
+    overflow: auto;
+  } */

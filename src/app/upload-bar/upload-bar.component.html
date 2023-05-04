@@ -1,0 +1,11 @@
+<mat-expansion-panel #panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        This is the expansion title
+      </mat-panel-title>
+      <mat-icon *ngIf="!panel.expanded" >keyboard_arrow_up</mat-icon>
+      <mat-icon *ngIf="panel.expanded" >keyboard_arrow_down</mat-icon>
+
+    </mat-expansion-panel-header>
+    <p>This is the primary content of the panel.</p>
+  </mat-expansion-panel>
