@@ -7,6 +7,7 @@ import { DeleteObjectsRequest, ListObjectsV2Request, ManagedUpload, PresignedPos
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { UploadBarComponent } from './upload-bar/upload-bar.component';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class S3Service {
   secretAccessKey = environment.S3authorization.secretAccessKey ;
   region =environment.S3authorization.region ;
 
+  uploadProgressSubject= new ReplaySubject<Number>(0)
 //   getAllBuckets() {
 //     const allBuckets = new aws.S3(
 //       {
@@ -122,21 +124,34 @@ export class S3Service {
       queueSize: 1,
     };
 
-      let upload = this.getS3Bucket().upload(params, options);
-      upload.on("httpUploadProgress",(progress)=>{
-      let progressPercentage = Math.round(progress.loaded / progress.total * 100);
-      console.log(progressPercentage)
-        //create progress listener subscriber
-
-    })
+    //   let upload = this.getS3Bucket().upload(params, options);
+    //   upload.on("httpUploadProgress",(progress)=>{
+    //   let progressPercentage = Math.round(progress.loaded / progress.total * 100);
+    //   console.log(progressPercentage);
+    //   this.uploadProgressSubject.next(progressPercentage)
+    // })
     return new Promise((resolve, reject) => {
       const that = this
-      upload.send(function (err, data) {
-        if (err) {
-          reject(false);
+      // upload.send(function (err, data) {
+      //   if (err) {
+      //     reject(false);
+      //     that.uploadProgressSubject.error(err)
+      //   }
+      //   resolve(data);
+      //   that.uploadProgressSubject.complete()
+
+      // });
+
+      for(let i=0;i<101;i++){
+        setTimeout(()=>{
+          this.uploadProgressSubject.next(i)
+        },1000);
+        if(i==50){
+          reject("very serious error");
+          break;
         }
-        resolve(data);
-      });
+      }
+
     });
   }
 
