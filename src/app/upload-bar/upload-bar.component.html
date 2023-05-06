@@ -3,13 +3,16 @@
       <mat-panel-title>
        Uploading {{data.name}}
       </mat-panel-title>
-      <mat-icon *ngIf="!panel.expanded" >keyboard_arrow_up</mat-icon>
-      <mat-icon *ngIf="panel.expanded" >keyboard_arrow_down</mat-icon>
-      <mat-panel-description>
-        <mat-spinner *ngIf="!uploadError" ></mat-spinner>
-        <mat-icon *ngIf="uploadError" >keyboard_arrow_down</mat-icon>
-
-      </mat-panel-description>
+<div class="d-flex flex-row justify-content-between align-items-center">
+  <div *ngIf="!uploadError">
+    <div id="loadingSpinner"></div>
+  </div>
+  <div>
+    <mat-icon *ngIf="uploadError">cancel</mat-icon>
+    <mat-icon  *ngIf="!panel.expanded">keyboard_arrow_up</mat-icon>
+    <mat-icon  *ngIf="panel.expanded">keyboard_arrow_down</mat-icon>
+  </div>
+</div>
     </mat-expansion-panel-header>
     <mat-progress-bar  [color]="uploadError?'warn':'primary' " mode="determinate" value="{{uploadProgressPercentage}}"></mat-progress-bar>
 
