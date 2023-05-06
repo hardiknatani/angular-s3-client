@@ -33,6 +33,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { FlexModule, FlexLayoutModule } from '@angular/flex-layout';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 @NgModule({
   exports: [
     MatAutocompleteModule,
@@ -68,7 +70,11 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     MatTooltipModule,
     MatTreeModule,
     MatFormFieldModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FlexModule,
+    FlexLayoutModule,
   ],
   providers: [
   ],

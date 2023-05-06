@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
-import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
-
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { S3Service } from './s3.service';
@@ -13,22 +9,25 @@ import { DeleteDialogComponentComponent } from 'src/delete-dialogs-component/del
 import { ShareModalComponent } from './share-modal/share-modal.component';
 import { LoginModalComponent } from './login-modal/login-modal.component';
 import { UploadBarComponent } from './upload-bar/upload-bar.component';
+import { BlockUIModule } from 'ng-block-ui';
+import { SnackBarService } from './snackBarService/snack-bar.service';
 
 @NgModule({
   declarations: [
-    AppComponent,DeleteDialogComponentComponent, ShareModalComponent, LoginModalComponent, UploadBarComponent
+    AppComponent,
+    DeleteDialogComponentComponent,
+    ShareModalComponent,
+    LoginModalComponent,
+    UploadBarComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     MaterialModule,
-    ReactiveFormsModule,
-    FormsModule,
-    FlexModule,
-    FlexLayoutModule,
+    BlockUIModule.forRoot()
   ],
-  providers: [S3Service],
+  providers: [S3Service,SnackBarService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

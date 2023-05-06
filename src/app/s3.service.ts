@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import * as aws from 'aws-sdk'
 import * as _ from 'lodash'
-import { Buffer } from 'buffer/';
-import { environment } from 'src/environments/environment';
-import { DeleteObjectsRequest, ListObjectsV2Request, ManagedUpload, PresignedPost } from 'aws-sdk/clients/s3';
+import { DeleteObjectsRequest} from 'aws-sdk/clients/s3';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { UploadBarComponent } from './upload-bar/upload-bar.component';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { SnackBarService } from './snackBarService/snack-bar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,41 +17,34 @@ export class S3Service {
   secretAccessKey;
   region;
 
+
   // bucketName =environment.S3authorization.bucket ;
   // accessKeyId =environment.S3authorization.accessKeyId ;
   // secretAccessKey = environment.S3authorization.secretAccessKey ;
   // region =environment.S3authorization.region ;
-
   uploadProgressSubject= new ReplaySubject<Number>(0)
-//   getAllBuckets() {
-//     const allBuckets = new aws.S3(
-//       {
-//         accessKeyId: this.accessKeyId,
-//         secretAccessKey: this.secretAccessKey,
-//         region: this.region
-//       }).listBuckets();
 
-//     return new Promise((resolve, reject) => {
-//       allBuckets.send((err, data) => {
-//         if (err) {
-//           console.log(err);
-//           reject(err)
-//         } else {
-//           console.log(data);
-//           resolve(data);
-//         }
-//       })
-//     })
-//   }
+validateCredentials(){
+aws.config.update({
+  accessKeyId:this.accessKeyId,
+  secretAccessKey:this.secretAccessKey
+})
 
-// validateCredentials(){
-//  let identity =new  aws.STS({
-//  }).getAccessKeyInfo({
-//   AccessKeyId:this.accessKeyId,
-//  })
-// }
+ let identity = new aws.STS().getCallerIdentity();
 
-  constructor(private http:HttpClient,private _bottomSheet:MatBottomSheet) { }
+return new Promise((resolve,reject)=>{
+  identity.send((err,data)=>{
+    if(err){
+      reject(err)
+    }else{
+      resolve(data)
+    }
+   })
+})
+}
+
+
+  constructor(private http:HttpClient,private _bottomSheet:MatBottomSheet,private snackBarService:SnackBarService) { }
   public getS3Bucket(): aws.S3 {
     const bucket = new aws.S3(
       {
@@ -80,27 +72,14 @@ export class S3Service {
         if (err) {
           reject(false);
         }
-        resolve(data);
-
+        else{
+          resolve(data);
+        }
       });
     });
   }
 
-  // getFileObject(filepath) {
-  //   const params = {
-  //     Bucket: this.bucketName,
-  //     Key: filepath
-  //   };
-  //   return new Promise((resolve, reject) => {
-  //     this.getS3Bucket().getObject(params, function (err, data) {
-  //       if (err) {
-  //         reject(false);
-  //       }
-  //       resolve(data);
 
-  //     })
-  //   });
-  // }
   putFileObject(folder, file,fileName) {
     this._bottomSheet.open(UploadBarComponent,{
       data:{
@@ -110,8 +89,8 @@ export class S3Service {
       panelClass:"upload-bar-bottom-sheet",
       hasBackdrop: false,
       closeOnNavigation: true,
+      
       });
-
 
     const params = {
       Bucket: this.bucketName,
@@ -124,34 +103,33 @@ export class S3Service {
       queueSize: 1,
     };
 
-    //   let upload = this.getS3Bucket().upload(params, options);
-    //   upload.on("httpUploadProgress",(progress)=>{
-    //   let progressPercentage = Math.round(progress.loaded / progress.total * 100);
-    //   console.log(progressPercentage);
-    //   this.uploadProgressSubject.next(progressPercentage)
-    // })
+      let upload = this.getS3Bucket().upload(params, options);
+      upload.on("httpUploadProgress",(progress)=>{
+      let progressPercentage = Math.round(progress.loaded / progress.total * 100);
+      this.uploadProgressSubject.next(progressPercentage)
+    })
+
     return new Promise((resolve, reject) => {
       const that = this
-      // upload.send(function (err, data) {
-      //   if (err) {
-      //     reject(false);
-      //     that.uploadProgressSubject.error(err)
-      //   }
-      //   resolve(data);
-      //   that.uploadProgressSubject.complete()
+      upload.send(function (err, data) {
+        if (err) {
+          reject(false);
+          that.uploadProgressSubject.error(err)
+          that.snackBarService.open("Upload Failed",'error',1000);
+          
+        }else{
+          resolve(data);
+          that.uploadProgressSubject.complete()
+          that.snackBarService.open("Upload Successful",'success',1000);
 
-      // });
-
-      for(let i=0;i<101;i++){
-        setTimeout(()=>{
-          this.uploadProgressSubject.next(i)
-        },1000);
-        if(i==50){
-          reject("very serious error");
-          break;
+          window.removeEventListener("beforeunload", function (e) {
+            var confirmationMessage = "\o/";
+           window.alert("Upload in progress, Please do not close this window.");
+            (e || window.event).returnValue = confirmationMessage; 
+            return confirmationMessage;                            
+          });
         }
-      }
-
+      });
     });
   }
 
@@ -169,13 +147,14 @@ export class S3Service {
 
       urls.forEach(url=>{
         window.open(url, "_blank");
-      }
-        )
+      })
+      this.snackBarService.open("Download Started",'success',1000)
+
 
   }
 
 
-  async getSingleImageUrl(key) {
+  async getSingleFileUrl(key) {
     const params = {
       Bucket: this.bucketName,
       Key: key,
@@ -269,13 +248,14 @@ export class S3Service {
         if (err) {
           reject(err);
         }
-        resolve(data);
+        else{
+          resolve(data);
+        }
       });
     });
   }
 
 
   
-  // Usage example
 
 }

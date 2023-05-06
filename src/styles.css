@@ -22,9 +22,23 @@ mat-bottom-sheet-container{
     border-radius: 25px 25px 0 0 !important;
   }
   
-   /* .bottom-sheet{
-    padding-top: 0;
-    width: 100vw;
-    height: 35vh;
-    overflow: auto;
-  } */
+  .success {
+    background: green;
+  }
+  .success .mat-simple-snackbar-action button{
+    color: white;
+  }
+  .success .mat-simple-snackbar {
+    color: white;
+  }
+  
+  .error {
+    background: red;
+  }
+  .error .mat-simple-snackbar-action button{
+    color: white;
+  }
+  .error .mat-simple-snackbar {
+    color: white;
+  }
+  

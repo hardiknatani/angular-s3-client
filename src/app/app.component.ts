@@ -1,23 +1,21 @@
-import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import moment from 'moment';
 import isEqual from 'lodash-es/isEqual';
 import orderBy from 'lodash-es/orderBy';
 import { S3Service } from './s3.service';
-import { environment } from 'src/environments/environment';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import {DeleteDialogComponentComponent} from '../delete-dialogs-component/delete-dialog-component.component'
 import { ShareModalComponent } from './share-modal/share-modal.component';
 import { Observable } from 'rxjs';
-import { filter, finalize,startWith,map } from 'rxjs/operators';
+import { startWith,map } from 'rxjs/operators';
 import { LoginModalComponent } from './login-modal/login-modal.component';
-import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
-import { UploadBarComponent } from './upload-bar/upload-bar.component';
-import { Key } from 'protractor';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { SnackBarService } from './snackBarService/snack-bar.service';
 
 export interface TableColumn<T> {
   label: string;
@@ -38,6 +36,7 @@ export interface TableColumn<T> {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit,AfterViewInit {
+  @BlockUI() blockUI: NgBlockUI;
   listView:boolean = false;
   displayFileActions:boolean = false;
   switchingView:boolean = false;
@@ -47,7 +46,6 @@ export class AppComponent implements OnInit,AfterViewInit {
   bucket:string;
   selectedFiles:any;
   fileUploadControl= new FormControl();
-  isLoading=false;
   leftSideFlag = true;
   rightSide = 0;
   leftSide = 100;
@@ -105,24 +103,21 @@ export class AppComponent implements OnInit,AfterViewInit {
   constructor(
      private s3Service: S3Service,
      private dialog: MatDialog,
-     private _bottomSheet: MatBottomSheet
+     private snackBarService:SnackBarService
     ) {}
 
   ngOnInit() {
-    // this.isLoading=true;
     if(!this.s3Service.secretAccessKey || !this.s3Service.accessKeyId || ! this.s3Service.region || !this.s3Service.bucketName ){
       this.dialog.open(LoginModalComponent,{
         disableClose:true
       }).afterClosed().subscribe(()=>{
-        this.isLoading=true;
+        this.blockUI.start()
         this.ngOnInit()
       })
     }
     else{
+    this.blockUI.stop()
     this.loadFiles()
-    .then(() =>{
-      this.isLoading=false;
-      this.setDisplayPath([])});
     }
 
     this.filteredFiles = this.searchCtrl.valueChanges.pipe(
@@ -159,11 +154,14 @@ export class AppComponent implements OnInit,AfterViewInit {
   }
 
   onSearchEnter(){
-    console.log(this.searchCtrl.value)
-
+    let file = this.searchCtrl.value;
+    this.setDisplayPath(file.Path);
+    this.selection.clear();
+    if(!file.isFolder) this.selection.select(file)
   }
 
   loadFiles() {
+    this.blockUI.start()
     function fileSizeFormatter(input) {
       if(input) {
         let sizeInMB = input / 1024 / 1024;
@@ -175,14 +173,17 @@ export class AppComponent implements OnInit,AfterViewInit {
     return this.s3Service.getFiles()
     .then((res:any) => {
       this.fileList = res;
-      this.bucket =environment.S3authorization.bucket;
-      
+      this.bucket =this.s3Service.bucketName;
       this.fileList.forEach(file => {
         if(!file.isFolder) file.formattedSize = fileSizeFormatter(file.Size);
         file.formattedDate = moment(file.LastModified).format('YYYY-MM-DD HH:mm');
-        }) 
+        });
+        this.setDisplayPath([]); 
+        this.blockUI.stop()
     })
-    .catch(console.log);
+    .catch((err)=>{
+      this.snackBarService.open("Error loading Files",'error',1000)
+    });
   }
 
   setDisplayPath(path) {
@@ -226,27 +227,15 @@ export class AppComponent implements OnInit,AfterViewInit {
     }else{
       folderName=folderName.join('/')+"/";
     }
-    // this.isLoading=true;
     const file = (e.target as HTMLInputElement).files[0];
     this.s3Service.putFileObject(folderName,file,file.name)    
     .then(data=>{
-
-      console.log(data);
-      // this.isLoading=false;
       this.loadFiles()
-    }).catch((err)=>{
-      console.log(err)
-      this.isLoading=false;
-    }).finally(()=>{
-      this.isLoading=false;
     })
-
-
   }
 
   deleteObject(){
     this.dialog.open(DeleteDialogComponentComponent,{
-      // fileList:this.selectedFiles
       data:{
         fileList:this.selectedFiles
       }
@@ -259,14 +248,15 @@ export class AppComponent implements OnInit,AfterViewInit {
   }
 
   async share() {
-    this.isLoading = true;
+    this.blockUI.start()
     let urlList = []
     Promise.all(this.selectedFiles.map(async (file) => {
-      await this.s3Service.getSingleImageUrl(file.Key).then(url => {
+      await this.s3Service.getSingleFileUrl(file.Key).then(url => {
         urlList.push({ name: file.Name, url });
       })
     })).then(() => {
-      this.isLoading = false;
+      this.blockUI.stop()
+
       this.dialog.open(ShareModalComponent, {
         data: {
           fileList: urlList

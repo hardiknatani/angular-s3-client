@@ -1,16 +1,26 @@
 <mat-expansion-panel #panel hideToggle expanded>
     <mat-expansion-panel-header>
       <mat-panel-title>
-       Uploading {{data.name}}
+       Uploading {{data.name}} <strong>  {{uploadProgressPercentage}} %</strong>
       </mat-panel-title>
 <div class="d-flex flex-row justify-content-between align-items-center">
-  <div *ngIf="!uploadError">
+  <div *ngIf="!uploadError && uploadProgressPercentage<100">
     <div id="loadingSpinner"></div>
   </div>
-  <div>
-    <mat-icon *ngIf="uploadError">cancel</mat-icon>
-    <mat-icon  *ngIf="!panel.expanded">keyboard_arrow_up</mat-icon>
-    <mat-icon  *ngIf="panel.expanded">keyboard_arrow_down</mat-icon>
+  <div *ngIf="uploadProgressPercentage==100">
+<button mat-icon-button (click)="bottomSheetRef.dismiss()" >
+  <mat-icon>check_circle_outline</mat-icon>
+</button>
+  </div>
+  <div class="d-flex flex-row justify-content-between align-items-center" >
+    <button mat-icon-button *ngIf="uploadError" (click)="bottomSheetRef.dismiss()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <div>
+      <mat-icon *ngIf="!panel.expanded">keyboard_arrow_up</mat-icon>
+      <mat-icon *ngIf="panel.expanded">keyboard_arrow_down</mat-icon>
+    </div>
+
   </div>
 </div>
     </mat-expansion-panel-header>
