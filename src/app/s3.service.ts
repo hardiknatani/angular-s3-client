@@ -14,15 +14,15 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class S3Service {
-  // bucketName;
-  // accessKeyId;
-  // secretAccessKey;
-  // region;
+  bucketName;
+  accessKeyId;
+  secretAccessKey;
+  region;
 
-  bucketName =environment.S3authorization.bucket ;
-  accessKeyId =environment.S3authorization.accessKeyId ;
-  secretAccessKey = environment.S3authorization.secretAccessKey ;
-  region =environment.S3authorization.region ;
+  // bucketName =environment.S3authorization.bucket ;
+  // accessKeyId =environment.S3authorization.accessKeyId ;
+  // secretAccessKey = environment.S3authorization.secretAccessKey ;
+  // region =environment.S3authorization.region ;
   uploadProgressSubject= new ReplaySubject<Number>(0)
 
 validateCredentials(){
