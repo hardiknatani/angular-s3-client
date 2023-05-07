@@ -17,7 +17,8 @@
                                     <h3 class="list-item__name">Bucket Name</h3>
                                 </div>
                                 <div fxFlex="60">
-                                    <mat-form-field class="w-100">
+                                    <mat-form-field class="w-100" appearance="fill">
+                                        <mat-label>Bucket Name</mat-label>
                                         <input formControlName="bucketName" required matInput>
                                     </mat-form-field>
                                 </div>
@@ -27,7 +28,8 @@
                                     <h3 class="list-item__name">Access Key ID</h3>
                                 </div>
                                 <div fxFlex="60">
-                                    <mat-form-field class="w-100">
+                                    <mat-form-field class="w-100" appearance="fill">
+                                        <mat-label>Access Key ID</mat-label>
                                         <input formControlName="accessKeyId" required matInput>
                                     </mat-form-field>
                                 </div>
@@ -37,7 +39,8 @@
                                     <h3 class="list-item__name">Secret Access Key</h3>
                                 </div>
                                 <div fxFlex="60">
-                                    <mat-form-field class="w-100">
+                                    <mat-form-field class="w-100" appearance="fill">
+                                        <mat-label>Secret Access Key</mat-label>
                                         <input formControlName="secretAccessKey" required matInput>
                                     </mat-form-field>
                                 </div>
@@ -47,9 +50,20 @@
                                     <h3 class="list-item__name">Region</h3>
                                 </div>
                                 <div fxFlex="60">
-                                    <mat-form-field class="w-100">
-                                        <input formControlName="region" required matInput>
-                                    </mat-form-field>
+                                        <mat-form-field class="w-100" appearance="fill">
+                                            <mat-label>Region</mat-label>
+                                            <input type="text"
+                                                   placeholder="Pick one"
+                                                   aria-label="Number"
+                                                   matInput
+                                                   formControlName="region"
+                                                   [matAutocomplete]="auto">
+                                            <mat-autocomplete #auto="matAutocomplete">
+                                              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                {{option}}
+                                              </mat-option>
+                                            </mat-autocomplete>
+                                          </mat-form-field>
                                 </div>
                             </div>
                         </div>

@@ -25,8 +25,6 @@ export interface TableColumn<T> {
   cssClasses?: string[];
   options?: string[];
   modelValue?: '' | '',
-  hasPropertyInside?: boolean,
-  propertyInside?: string,
 }
 
 

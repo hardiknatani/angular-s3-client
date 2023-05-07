@@ -5,7 +5,9 @@ import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SnackBarService } from '../snackBarService/snack-bar.service';
 import { AWSError } from 'aws-sdk';
- 
+import { Observable } from 'rxjs';
+import { startWith,map } from 'rxjs/operators';
+
 @Component({
   selector: 'app-login-modal',
   templateUrl: './login-modal.component.html',
@@ -16,6 +18,8 @@ export class LoginModalComponent implements OnInit {
   form:FormGroup;
   error:boolean;
   errorMessage:string
+  awsRegionList=['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2', 'ca-central-1', 'eu-west-1', 'eu-central-1', 'eu-west-2', 'eu-west-3', 'eu-north-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-southeast-1', 'ap-southeast-2', 'ap-south-1', 'sa-east-1', 'us-gov-west-1', 'us-gov-east-1'];
+  filteredOptions: Observable<string[]>;
 
 
   constructor(private dialogRef: MatDialogRef<LoginModalComponent>,private s3Service:S3Service, private snackBarService:SnackBarService) {
@@ -28,8 +32,17 @@ export class LoginModalComponent implements OnInit {
   
   }
   ngOnInit(): void {
+    this.filteredOptions = this.form.get('region').valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
   }
 
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.awsRegionList.filter(option => option.toLowerCase().includes(filterValue));
+  }
   
 
   login() {

@@ -17,7 +17,6 @@ export class S3Service {
   secretAccessKey;
   region;
 
-
   // bucketName =environment.S3authorization.bucket ;
   // accessKeyId =environment.S3authorization.accessKeyId ;
   // secretAccessKey = environment.S3authorization.secretAccessKey ;
