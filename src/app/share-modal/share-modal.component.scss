@@ -1,0 +1,13 @@
+
+.list-item__name{
+    word-break: break-all;
+        display: -webkit-box;
+
+    /* -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-align: left; */
+    overflow: hidden;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+}

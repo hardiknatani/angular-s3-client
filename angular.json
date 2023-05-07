@@ -5,7 +5,11 @@
   "projects": {
     "angular-src": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -25,8 +29,13 @@
             "styles": [
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.css"
+              "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                  "node_modules/@angular/material"
+              ]}
+             ,
             "scripts": [],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -89,6 +98,7 @@
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
@@ -96,7 +106,7 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }

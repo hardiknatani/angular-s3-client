@@ -7,7 +7,7 @@ import {finalize} from 'rxjs/operators';
 @Component({
   selector: 'app-upload-bar',
   templateUrl: './upload-bar.component.html',
-  styleUrls: ['./upload-bar.component.css'],
+  styleUrls: ['./upload-bar.component.scss'],
 })
 export class UploadBarComponent implements OnInit {
 

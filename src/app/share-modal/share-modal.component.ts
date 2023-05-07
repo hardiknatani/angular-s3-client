@@ -5,7 +5,7 @@ import { S3Service } from '../s3.service';
 @Component({
   selector: 'app-share-modal',
   templateUrl: './share-modal.component.html',
-  styleUrls: ['./share-modal.component.css']
+  styleUrls: ['./share-modal.component.scss']
 })
 export class ShareModalComponent implements OnInit {
 urlList:any[]=[];
