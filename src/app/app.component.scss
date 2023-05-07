@@ -21,14 +21,17 @@ table {
     width: 100%;
 }
 
-tr:hover {
-    // background: whitesmoke;
+// .mat-row:hover {
+//   background-color: red;
+// }
+
+.mat-row.hovered {
+  background: #eee;
 }
 
-tr.row-selected {
-    // background: lightblue;
+.mat-row.highlighted {
+  background: #999;
 }
-
 ::ng-deep .share-tooltip{
     background-color:black;
     // color: rgba(255,255,255, 0.9) !important;

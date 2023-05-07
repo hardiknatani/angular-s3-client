@@ -83,7 +83,7 @@
                   <div>
                     <div class="table-container">
 
-                      <table [dataSource]="dataSource" class="w-full " mat-table matSort>
+                      <table [dataSource]="dataSource" class="w-full mat-elevation-z8" mat-table matSort >
 
                         <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
                           <ng-container *ngIf="column.type === 'checkbox'" [matColumnDef]="column.property">
@@ -137,7 +137,7 @@
                         <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
                         <tr (click)="!row.isFolder&&selection.select(row)" (dblclick)="fileDoubleClicked(row)"
                           *matRowDef="let row;  columns: visibleColumns;"
-                          class="hover:bg-hover trans-ease-out cursor-pointer" mat-row></tr>
+                           mat-row [ngClass]="{hovered: row.hovered}" [class.highlighted]="selection.isSelected(row)" (click)="!row.isFolder&&selection.toggle(row)" (mouseover)="row.hovered = true" (mouseout)="row.hovered = false"></tr>
                       </table>
                       <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage" [pageSize]="pageSize"
                         (page)="pageChanged($event)" class="sticky left-0">

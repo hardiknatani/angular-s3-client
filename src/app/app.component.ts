@@ -77,11 +77,12 @@ export class AppComponent implements OnInit,AfterViewInit {
     this.isAllSelected() ?
       this.selection.clear() :
       this.dataSource.data.forEach((row:any) => !row.isFolder && this.selection.select(row));
+      // this.selection.isSelected("")?this.selection.
   } 
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.dataSource.data.filter((row:any)=>!row.isFolder).length;
     return numSelected === numRows;
   } 
 
