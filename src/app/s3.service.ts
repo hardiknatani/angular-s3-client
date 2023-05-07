@@ -7,20 +7,22 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { UploadBarComponent } from './upload-bar/upload-bar.component';
 import { ReplaySubject } from 'rxjs';
 import { SnackBarService } from './snackBarService/snack-bar.service';
+import { environment } from 'src/environments/environment';
+ 
 
 @Injectable({
   providedIn: 'root'
 })
 export class S3Service {
-  bucketName;
-  accessKeyId;
-  secretAccessKey;
-  region;
+  // bucketName;
+  // accessKeyId;
+  // secretAccessKey;
+  // region;
 
-  // bucketName =environment.S3authorization.bucket ;
-  // accessKeyId =environment.S3authorization.accessKeyId ;
-  // secretAccessKey = environment.S3authorization.secretAccessKey ;
-  // region =environment.S3authorization.region ;
+  bucketName =environment.S3authorization.bucket ;
+  accessKeyId =environment.S3authorization.accessKeyId ;
+  secretAccessKey = environment.S3authorization.secretAccessKey ;
+  region =environment.S3authorization.region ;
   uploadProgressSubject= new ReplaySubject<Number>(0)
 
 validateCredentials(){

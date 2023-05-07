@@ -22,16 +22,16 @@ table {
 }
 
 tr:hover {
-    background: whitesmoke;
+    // background: whitesmoke;
 }
 
 tr.row-selected {
-    background: lightblue;
+    // background: lightblue;
 }
 
 ::ng-deep .share-tooltip{
     background-color:black;
-    color: rgba(255,255,255, 0.9) !important;
+    // color: rgba(255,255,255, 0.9) !important;
     font-weight: 600;
     font-size: 14px;
 }

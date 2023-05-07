@@ -1,210 +1,224 @@
-<block-ui>
+<div class="mat-app-background">
+  <block-ui>
 
-<div class="container-fluid" >
+    <div class="container-fluid">
 
-  <div class="row">
-    <div class="col-md-12 pt-4 px-5">
+      <div class="row">
+        <div class="col-md-12 pt-4 px-5">
 
-<div class="my-2" style="width:60%">
-  <div class="bg-white border-primary px-4 search-bar" fxFlex="auto" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-    fxLayoutAlign="start center">
-    <mat-icon> search</mat-icon>
-  <input matInput [formControl]="searchCtrl" [matAutocomplete]="auto" class="px-4 py-3 border-0 outline-none w-100 bg-transparent" style="outline:none" placeholder="Search..." type="search">
-  <mat-autocomplete (optionSelected)="onSearchEnter()" #auto="matAutocomplete" [displayWith]="displayFn">
-    <mat-option  *ngFor="let file of filteredFiles | async" [value]="file">
-      {{file.Name}}
-    </mat-option>
-  </mat-autocomplete>
-  </div>
-</div>
-<div>
-  <mat-card fxFlex={{leftSide}} >
-    <div class="card cs-card"  style="border: none;">
-      <div class="card-content">
-        <div class="row ml-3 mt-3" >
-          <div >
-            <span *ngFor="let node of displayPath;index as i">
-              <button *ngIf="i > 0" disabled mat-icon-button style="font-size:18px">
-                <mat-icon>chevron_right</mat-icon>
-              </button>
-              <button *ngIf="i < displayPath.length-1" mat-button
-                style="font-size:18px;padding:0px;text-transform:capitalize;"
-                (click)="displayPathClicked(i)">{{node}}</button>
-              <button *ngIf="i === displayPath.length-1" mat-button
-                style="font-size:18px;padding:0px;text-transform:capitalize;">
-                {{node}}
-              </button>
-            </span>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="w-100 d-flex flex-row justify-content-between align-items-center" >
-            <div class=" py-2" >
-              <button mat-raised-button extended color="primary" class="upload_button" style="font-size:18px" matTooltip="Upload"
-              matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="uploadInput.click()"  >
-              <mat-icon>cloud_upload</mat-icon>
-              Upload
-            </button>
-            <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name="" id="" (change)="upload($event)">
+          <div class="my-2 w-100 d-flex flex-row justify-content-between align-items-center">
+            <div
+              class="border border-primary px-4 search-bar w-50 d-flex flex-row justify-content-between align-items-center">
+              <mat-icon> search</mat-icon>
+              <input matInput [formControl]="searchCtrl" [matAutocomplete]="auto"
+                class="px-4 py-3 border-0 outline-none w-100 bg-transparent" style="outline:none"
+                placeholder="Search..." type="search">
+              <mat-autocomplete (optionSelected)="onSearchEnter()" #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let file of filteredFiles | async" [value]="file">
+                  {{file.Name}}
+                </mat-option>
+              </mat-autocomplete>
             </div>
-            <div >
-              <span *ngIf="displayFileActions">
-
-                <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
-                  matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="download()"  >
-                  <mat-icon>cloud_download</mat-icon>
-                </button>
-                  <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Share"
-                  matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="share()" >
-                  <mat-icon>share</mat-icon>
-                </button>
-                <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="File Sharing"
-                  matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="deleteObject()" >
-                  <mat-icon >delete</mat-icon>
-                </button>
-              </span>
+            <div class=" d-flex flex-row justify-content-between align-items-center">
+              <mat-icon class="mr-8">brightness_5</mat-icon>
+              <mat-slide-toggle color="primary" [formControl]="toggleControl" class="mr-8">
+              </mat-slide-toggle>
+              <mat-icon>bedtime</mat-icon>
             </div>
           </div>
-        </div>        
-        <mat-divider></mat-divider>
+          <div>
+            <mat-card fxFlex={{leftSide}}>
+              <div class=" cs-card" style="border: none;">
+                <div class="card-content">
+                  <div class="row ml-3 mt-3">
+                    <div>
+                      <span *ngFor="let node of displayPath;index as i">
+                        <button *ngIf="i > 0" disabled mat-icon-button style="font-size:18px">
+                          <mat-icon>chevron_right</mat-icon>
+                        </button>
+                        <button *ngIf="i < displayPath.length-1" mat-button
+                          style="font-size:18px;padding:0px;text-transform:capitalize;"
+                          (click)="displayPathClicked(i)">{{node}}</button>
+                        <button *ngIf="i === displayPath.length-1" mat-button
+                          style="font-size:18px;padding:0px;text-transform:capitalize;">
+                          {{node}}
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="w-100 d-flex flex-row justify-content-between align-items-center">
+                      <div class=" py-2">
+                        <button mat-raised-button extended class="upload_button bg-primary text-white"
+                          style="font-size:18px" matTooltip="Upload" matTooltipClass="share-tooltip"
+                          matTooltipShowDelay="1000" (click)="uploadInput.click()">
+                          <mat-icon>cloud_upload</mat-icon>
+                          Upload
+                        </button>
+                        <input [formControl]="fileUploadControl" #uploadInput class="invisible" type="file" name=""
+                          id="" (change)="upload($event)">
+                      </div>
+                      <div>
+                        <span *ngIf="displayFileActions">
+
+                          <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Download"
+                            matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="download()">
+                            <mat-icon>cloud_download</mat-icon>
+                          </button>
+                          <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="Share"
+                            matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="share()">
+                            <mat-icon>share</mat-icon>
+                          </button>
+                          <button mat-icon-button class="pull-right" style="font-size:18px" matTooltip="File Sharing"
+                            matTooltipClass="share-tooltip" matTooltipShowDelay="1000" (click)="deleteObject()">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <mat-divider></mat-divider>
 
 
-<div>
-<div  class="table-container" >
+                  <div>
+                    <div class="table-container">
 
- <table  [dataSource]="dataSource" class="w-full " mat-table matSort>
+                      <table [dataSource]="dataSource" class="w-full " mat-table matSort>
 
-    <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
-      <ng-container *ngIf="column.type === 'checkbox'" [matColumnDef]="column.property">
-        <th *matHeaderCellDef mat-header-cell>
-          <mat-checkbox (change)="$event ? masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()"
-                        color="primary">
-          </mat-checkbox>
-        </th>
-        <td *matCellDef="let row" class="w-4" mat-cell>
-          <mat-checkbox *ngIf="!row.isFolder"
-                        (change)="$event ? selection.toggle(row) : null"
-                        (click)="$event.stopPropagation()"
-                        [checked]="selection.isSelected(row)"
-                        color="primary">
-          </mat-checkbox>
-        </td>
-      </ng-container>
-    </ng-container>
+                        <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+                          <ng-container *ngIf="column.type === 'checkbox'" [matColumnDef]="column.property">
+                            <th *matHeaderCellDef mat-header-cell>
+                              <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()">
+                              </mat-checkbox>
+                            </th>
+                            <td *matCellDef="let row" class="w-4" mat-cell>
+                              <mat-checkbox *ngIf="!row.isFolder" color="primary"
+                                (change)="$event ? selection.toggle(row) : null" (click)="$event.stopPropagation()"
+                                [checked]="selection.isSelected(row)">
+                              </mat-checkbox>
+                            </td>
+                          </ng-container>
+                        </ng-container>
 
-    <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
-      <ng-container *ngIf="column.type === 'custom'" [matColumnDef]="column.property">
-          <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
-              column.label }}</th>
-          <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
-            <mat-icon *ngIf="row[column.property] == true" >folder</mat-icon>
-            <mat-icon  *ngIf="row[column.property] == false" > insert_drive_file</mat-icon>
+                        <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+                          <ng-container *ngIf="column.type === 'custom'" [matColumnDef]="column.property">
+                            <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
+                              column.label }}</th>
+                            <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                              <mat-icon *ngIf="row[column.property] == true">folder</mat-icon>
+                              <mat-icon *ngIf="row[column.property] == false"> insert_drive_file</mat-icon>
 
-          </td>
-      </ng-container>
-  </ng-container>
+                            </td>
+                          </ng-container>
+                        </ng-container>
 
-  <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
-      <ng-container *ngIf="column.type === 'text'" [matColumnDef]="column.property">
-          <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
-              column.label }}</th>
-          <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>{{
-              row[column.property] }}</td>
-      </ng-container>
-  </ng-container>
+                        <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+                          <ng-container *ngIf="column.type === 'text'" [matColumnDef]="column.property">
+                            <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
+                              column.label }}</th>
+                            <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>{{
+                              row[column.property] }}</td>
+                          </ng-container>
+                        </ng-container>
 
-  <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
-      <ng-container *ngIf="column.type === 'date'" [matColumnDef]="column.property">
-          <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
-              column.label }}</th>
-          <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>{{
-              row[column.property] |date }}</td>
-      </ng-container>
-  </ng-container>
+                        <ng-container *ngFor="let column of tableColumns; trackBy: trackByProperty">
+                          <ng-container *ngIf="column.type === 'date'" [matColumnDef]="column.property">
+                            <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header> {{
+                              column.label }}</th>
+                            <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>{{
+                              row[column.property] |date }}</td>
+                          </ng-container>
+                        </ng-container>
 
 
 
-  <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
-  <tr  (click)="!row.isFolder&&selection.select(row)" (dblclick)="fileDoubleClicked(row)" *matRowDef="let row;  columns: visibleColumns;" 
-      class="hover:bg-hover trans-ease-out cursor-pointer" mat-row></tr>
-</table> 
-<mat-paginator  [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage" [pageSize]="pageSize" (page)="pageChanged($event)" class="sticky left-0">
-</mat-paginator> 
-</div>
+                        <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+                        <tr (click)="!row.isFolder&&selection.select(row)" (dblclick)="fileDoubleClicked(row)"
+                          *matRowDef="let row;  columns: visibleColumns;"
+                          class="hover:bg-hover trans-ease-out cursor-pointer" mat-row></tr>
+                      </table>
+                      <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage" [pageSize]="pageSize"
+                        (page)="pageChanged($event)" class="sticky left-0">
+                      </mat-paginator>
+                    </div>
 
-</div>
-      </div>
-    </div>
-  </mat-card>
-  <mat-card class="p-0 ml-3" fxFlex={{rightSide}} *ngIf="!leftSideFlag"  >
-    <div class="head bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
-      *ngIf="selectedFiles.length==1">
-      <div class="d-flex flex-row align-items-center  ">
-        <button mat-icon-button>
-          <mat-icon>insert_drive_file</mat-icon>
-        </button>
-        <div class="w-75 ">
-          <span>{{selectedFiles[0].Name}}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card>
+            <mat-card class="p-0 ml-3" fxFlex={{rightSide}} *ngIf="!leftSideFlag">
+              <div
+                class="head bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
+                *ngIf="selectedFiles.length==1">
+                <div class="d-flex flex-row align-items-center  ">
+                  <button mat-icon-button>
+                    <mat-icon>insert_drive_file</mat-icon>
+                  </button>
+                  <div class="w-75 ">
+                    <span>{{selectedFiles[0].Name}}</span>
+                  </div>
+                </div>
+                <button mat-icon-button (click)="closeDetailsSidebar()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+              <div
+                class="head bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
+                *ngIf="selectedFiles.length>1">
+                <div class="d-flex flex-row align-items-center">
+                  <button mat-icon-button>
+                    <mat-icon>check_circle_outline</mat-icon>
+                  </button>
+                  <div class="w-75 ">
+                    <span>{{selectedFiles.length}} files selected</span>
+                  </div>
+                </div>
+                <button mat-icon-button (click)="closeDetailsSidebar()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+              <div class="p-3 d-flex flex-column details-tab" *ngIf="selectedFiles.length==1">
+                <div>
+                  <h2>File details</h2>
+                </div>
+                <div class="">
+                  <h4>
+                    File Type
+                  </h4>
+                  <p>
+                    {{selectedFiles[0].Name.split('.')[selectedFiles[0].Name.split('.').length-1]}}
+                  </p>
+                </div>
+
+                <div>
+                  <h4>
+                    Size
+                  </h4>
+                  <p>{{selectedFiles[0].formattedSize}}</p>
+                </div>
+
+                <div>
+                  <h4>
+                    Location
+                  </h4>
+                  <p>{{selectedFiles[0].Path}}</p>
+                </div>
+
+                <div>
+                  <h4>
+                    Last Modified
+                  </h4>
+                  <p>{{selectedFiles[0].LastModified}}</p>
+                </div>
+              </div>
+            </mat-card>
+          </div>
         </div>
       </div>
-      <button mat-icon-button (click)="closeDetailsSidebar()">
-        <mat-icon>close</mat-icon>
-      </button>
     </div>
-    <div class="head bg-primary d-flex flex-row justify-content-between align-items-center p-2 text-white text-left"
-    *ngIf="selectedFiles.length>1">
-    <div class="d-flex flex-row align-items-center">
-      <button mat-icon-button>
-        <mat-icon>check_circle_outline</mat-icon>
-      </button>
-      <div class="w-75 ">
-        <span>{{selectedFiles.length}} files selected</span>
-      </div>
-    </div>
-    <button mat-icon-button (click)="closeDetailsSidebar()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-    <div class="p-3 d-flex flex-column details-tab" *ngIf="selectedFiles.length==1">
-      <div>
-        <h2>File details</h2>
-      </div>
-      <div class="" >
-        <h4 >
-          File Type
-        </h4>
-        <p>
-          {{selectedFiles[0].Name.split('.')[selectedFiles[0].Name.split('.').length-1]}}      
-        </p>      
-      </div>
 
-      <div>
-        <h4>
-          Size
-        </h4>
-        <p>{{selectedFiles[0].formattedSize}}</p>
-      </div>
+  </block-ui>
 
-      <div>
-        <h4>
-          Location
-        </h4>
-        <p>{{selectedFiles[0].Path}}</p>
-      </div>
-    
-      <div>
-        <h4>
-          Last Modified
-        </h4>
-        <p>{{selectedFiles[0].LastModified}}</p>
-      </div>
-    </div>
-  </mat-card>
 </div>
-    </div>
-  </div>
-</div>
-
-</block-ui>

@@ -50,20 +50,16 @@
                                     <h3 class="list-item__name">Region</h3>
                                 </div>
                                 <div fxFlex="60">
-                                        <mat-form-field class="w-100" appearance="fill">
-                                            <mat-label>Region</mat-label>
-                                            <input type="text"
-                                                   placeholder="Pick one"
-                                                   aria-label="Number"
-                                                   matInput
-                                                   formControlName="region"
-                                                   [matAutocomplete]="auto">
-                                            <mat-autocomplete #auto="matAutocomplete">
-                                              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                    <mat-form-field class="w-100" appearance="fill">
+                                        <mat-label>Region</mat-label>
+                                        <input type="text" placeholder="Pick one" aria-label="Number" matInput
+                                            formControlName="region" [matAutocomplete]="auto">
+                                        <mat-autocomplete #auto="matAutocomplete">
+                                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                                                 {{option}}
-                                              </mat-option>
-                                            </mat-autocomplete>
-                                          </mat-form-field>
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
                                 </div>
                             </div>
                         </div>
@@ -77,13 +73,14 @@
 <hr>
 <div class="mt-3" fxLayout="row" fxLayoutAlign="end baseline">
 
-<div class=" w-100 d-flex flex-column justify-content-start align-items-center" >
-    <button class="w-100" mat-raised-button color="primary" [disabled]="!form.valid" (click)="login()">Login</button>
-    <div class="mt-1" *ngIf="error" >
-<span>
-<em class="text-danger" >    {{errorMessage}}
-</em>
-</span>
+    <div class=" w-100 d-flex flex-column justify-content-start align-items-center">
+        <button class="w-100  bg-primary text-white" mat-raised-button [disabled]="!form.valid"
+            (click)="login()">Login</button>
+        <div class="mt-1" *ngIf="error">
+            <span>
+                <em class="text-danger"> {{errorMessage}}
+                </em>
+            </span>
+        </div>
     </div>
-</div>
 </div>

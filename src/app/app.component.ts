@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild,HostBinding } from '@angular/core';
 import moment from 'moment';
 import isEqual from 'lodash-es/isEqual';
 import orderBy from 'lodash-es/orderBy';
@@ -16,6 +16,7 @@ import { startWith,map } from 'rxjs/operators';
 import { LoginModalComponent } from './login-modal/login-modal.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SnackBarService } from './snackBarService/snack-bar.service';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 export interface TableColumn<T> {
   label: string;
@@ -35,6 +36,9 @@ export interface TableColumn<T> {
 })
 export class AppComponent implements OnInit,AfterViewInit {
   @BlockUI() blockUI: NgBlockUI;
+  toggleControl = new FormControl(false);
+  @HostBinding('class') className = '';
+
   listView:boolean = false;
   displayFileActions:boolean = false;
   switchingView:boolean = false;
@@ -101,10 +105,21 @@ export class AppComponent implements OnInit,AfterViewInit {
   constructor(
      private s3Service: S3Service,
      private dialog: MatDialog,
-     private snackBarService:SnackBarService
+     private snackBarService:SnackBarService,
+     private overlay: OverlayContainer
     ) {}
 
   ngOnInit() {
+    this.toggleControl.valueChanges.subscribe((darkMode) => {
+      const darkClassName = 'darkMode';
+      this.className = darkMode ? darkClassName : '';
+      if (darkMode) {
+        this.overlay.getContainerElement().classList.add(darkClassName);
+      } else {
+        this.overlay.getContainerElement().classList.remove(darkClassName);
+      }
+    });
+
     if(!this.s3Service.secretAccessKey || !this.s3Service.accessKeyId || ! this.s3Service.region || !this.s3Service.bucketName ){
       this.dialog.open(LoginModalComponent,{
         disableClose:true

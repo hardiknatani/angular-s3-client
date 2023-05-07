@@ -13,7 +13,7 @@
 <mat-dialog-content>
     <mat-list>
         <ul>
-        <li *ngFor="let file of fileList">
+        <li *ngFor="let file of fileList" class="ml-2 d-flex flex-row justify-content-between align-items-center">
             <mat-list-item  > 
                 <span matListItemTitle>{{file.Name}}</span>
             </mat-list-item>
@@ -25,6 +25,6 @@
 
 
 <mat-dialog-actions align="end">
-    <button mat-button (click)="close(false)">NO</button>
-    <button mat-button color="warn" (click)="close(true)">YES</button>
-</mat-dialog-actions>
+    <button mat-raised-button class=" bg-primary text-white" (click)="close(false)">NO</button>
+    <button mat-raised-button color="warn" (click)="close(true)">YES</button>
+</mat-dialog-actions>   

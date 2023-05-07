@@ -7,6 +7,7 @@ import { SnackBarService } from '../snackBarService/snack-bar.service';
 import { AWSError } from 'aws-sdk';
 import { Observable } from 'rxjs';
 import { startWith,map } from 'rxjs/operators';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-login-modal',
